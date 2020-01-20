@@ -1,5 +1,6 @@
 from queue import Queue
 
+
 class Node:
     def __init__(self, data=None):
         self.data = data
@@ -39,21 +40,78 @@ def level_order(node, result):
     while not q.empty():
         temp_node = q.get()
         result.append(temp_node.data)
-        if node.left:
-            q.put(node.left)
-        if node.right:
-            q.put(node.right)
+        if temp_node.left:
+            q.put(temp_node.left)
+        if temp_node.right:
+            q.put(temp_node.right)
 
 
-def find_max(node):
+def reverse_level_order(node):
+    if not node:
+        return False
+    q = Queue()
+    s = []
+    q.put(node)
+    while not q.empty():
+        temp_node = q.get()
+        if temp_node.left:
+            q.put(temp_node.left)
+        if temp_node.right:
+            q.put(temp_node.right)
+        s.insert(0, temp_node)
+    while len(s) > 0:
+        print(s.pop(0).data)
+
+
+def find_max_node(node):
     max_data = float("-infinity")
     if not node:
         return max_data
     if node.data > max_data:
         max_data = node.data
-    find_max(node.left)
-    find_max(node.right)
+    find_max_node(node.left)
+    find_max_node(node.right)
     return max_data
+
+
+def find(node, val):
+    if not node:
+        return False
+    if node.data == val:
+        return True
+    else:
+        temp = find(node.left, val)
+        if temp:
+            return temp
+        else:
+            return find(node.right, val)
+
+
+def find_size(node):
+    if not node:
+        return 0
+    return find_size(node.left) + find_size(node.right) + 1
+
+
+def find_depth(node):
+    if not node:
+        return 0
+    return max(find_depth(node.left), find_depth(node.right)) + 1
+
+
+def find_deepest_node(node):
+    if not node:
+        return
+    q = Queue()
+    q.put(node)
+    temp_node = None
+    while not q.empty():
+        temp_node = q.get()
+        if temp_node.left:
+            q.put(temp_node.left)
+        if temp_node.right:
+            q.put(temp_node.right)
+    return temp_node.data
 
 
 if __name__ == "__main__":
