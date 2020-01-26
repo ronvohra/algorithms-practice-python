@@ -1,54 +1,52 @@
-def minimum_days(rows, columns, grid):  # BFS - a 2d grid of cell towers all servers need to be updated
-    # WRITE YOUR CODE HERE
-    if not rows or not columns:
-        return 0
-    # Get co-ordinate pairs of the initial state where val is 1
-    ones = [[i, j] for i in range(rows) for j in range(columns) if grid[i][j]]
-    directions = [[0, -1], [0, 1], [-1, 0], [1, 0]]  # Up, down, left, right
-    days = 0
-    
-    while True:
-        new_coords = []
-        for [i, j] in ones:
-            for d in directions:
-                new_i, new_j = i + d[0], j + d[1]
-                if 0 <= new_i < rows and 0 <= new_j < columns and grid[new_i][new_j] == 0:
-                    grid[new_i][new_j] = 1
-                    new_coords.append([new_i, new_j])
-        ones = new_coords
-        if not ones:
-            break
-        days += 1
-        
-    return days
-
-##########
+from collections import defaultdict
 
 
-def num_treasure_trucks(rows, column, grid):  # DFS count islands
-    # WRITE YOUR CODE HERE
-    if not rows or not column:
-        return 0
-    count = 0
-    for i in range(rows):
-        for j in range(column):
-            if grid[i][j] == 1:
-                dfs(rows, column, grid, i, j)
-                count += 1
-    return count
-    pass
+class Graph:
+    def __init__(self, vertices):
+        self.graph = defaultdict(list)  # dictionary containing adjacency List
+        self.V = vertices  # No. of vertices
+
+    # function to add an edge to graph
+    def add_edge(self, u, v):
+        self.graph[u].append(v)
+
+    # A recursive function used by topologicalSort
+    def topological_sort_helper(self, v, visited, stack):
+        # Mark the current node as visited.
+        visited[v] = True
+
+        # Recur for all the vertices adjacent to this vertex
+        for i in self.graph[v]:
+            if not visited[i]:
+                self.topological_sort_helper(i, visited, stack)
+
+        # Push current vertex to stack which stores result (if printing dependencies, should this be reverse order?)
+        stack.insert(0, v)
+
+    def topological_sort(self):  # has to be a DAG? (no cycles, directed); O(V + E) (linear - sum of vertices and edges)
+        # Mark all the vertices as not visited
+        visited = [False] * self.V
+        stack = []
+
+        # Call the recursive helper function to store Topological Sort, starting from all vertices one by one
+        for i in range(self.V):
+            if not visited[i]:
+                self.topological_sort_helper(i, visited, stack)
+
+        print(stack)
+
+    @staticmethod
+    def test_topological_sort():
+        g = Graph(6)
+        g.add_edge(5, 2)
+        g.add_edge(5, 0)
+        g.add_edge(4, 0)
+        g.add_edge(4, 1)
+        g.add_edge(2, 3)
+        g.add_edge(3, 1)
+        print("Following is a Topological Sort of the given graph")
+        g.topological_sort()
 
 
-def dfs(row_count, col_count, grid, x, y):
-    if not grid[x][y]:
-        return
-    grid[x][y] = 0
-    
-    if x:
-        dfs(row_count, col_count, grid, x-1, y)
-    if x != row_count - 1:
-        dfs(row_count, col_count, grid, x+1, y)
-    if y:
-        dfs(row_count, col_count, grid, x, y-1)
-    if y != col_count - 1:
-        dfs(row_count, col_count, grid, x, y+1)
+if __name__ == "__main__":
+    Graph.test_topological_sort()
