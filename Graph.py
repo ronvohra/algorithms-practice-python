@@ -10,7 +10,7 @@ class Graph:
     def add_edge(self, u, v):
         self.graph[u].append(v)
 
-    # A recursive function used by topologicalSort
+    # A recursive function used by topological_sort
     def topological_sort_helper(self, v, visited, stack):
         # Mark the current node as visited.
         visited[v] = True
@@ -44,7 +44,7 @@ class Graph:
         g.add_edge(4, 1)
         g.add_edge(2, 3)
         g.add_edge(3, 1)
-        print("Following is a Topological Sort of the given graph")
+        print("The following is a topological sort of the given graph (reverse for dependency load order)")
         g.topological_sort()
 
 
